@@ -1,13 +1,17 @@
 # Сайт опросов
+
 Сайт опросник для Fabrique
 
-## Как установить
+## Как запустить отладочный сервер
 
 - Скачайте код
 - Установите зависимости командой `pip install -r requirements.txt`
 - Создайте БД командой `python3 manage.py migrate`
 - Запустите сервер разработки командой `python3 manage.py runserver`
 - Откройте сайт в бразуере `http://127.0.0.1:8000/`
+- для входа в [админку](http://127.0.0.1:8000/admin) создайте пользователя командой `python3 manage.py createsuperuser`
+
+Про разворачивание на боевом сервере [тут](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-18-04-ru)
 
 ## Переменные окружения
 
