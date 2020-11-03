@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Poll, Question
+from .models import Poll, Question, Choice
 
 
 class QuestionInline(admin.TabularInline):
@@ -27,3 +27,24 @@ class PollAdmin(admin.ModelAdmin):
         if obj:
             return ['start_date']
         return self.readonly_fields
+
+
+class ChoiceInline(admin.TabularInline):
+    model = Choice
+    extra = 0
+
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    search_fields = [
+        'text',
+        'question_type',
+        'poll',
+    ]
+    list_display = [
+        'id',
+        'text',
+        'question_type',
+        'poll',
+    ]
+    inlines = [ChoiceInline]
