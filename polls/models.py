@@ -8,6 +8,13 @@ class Poll(models.Model):
     end_date = models.DateTimeField('дата окончания')
     description = models.TextField('описание')
 
+    class Meta:
+        verbose_name = 'Опрос'
+        verbose_name_plural = 'Опросы'
+
+    def __str__(self):
+        return self.name
+
 
 class Question(models.Model):
     CHOICE = 'CHC'
@@ -23,6 +30,14 @@ class Question(models.Model):
                                      choices=QUESTION_TYPE_CHOICES, default=CHOICE)
     poll = models.ForeignKey(Poll, verbose_name='Опрос',
                              on_delete=models.CASCADE, related_name='questions')
+
+    def __str__(self):
+        return f'{self.id} {self.question_type}'
+
+    class Meta:
+        verbose_name = 'Вопрос'
+        verbose_name_plural = 'Вопросы'
+    
 
 
 class Choice(models.Model):
