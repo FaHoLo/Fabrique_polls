@@ -8,6 +8,7 @@ class Poll(models.Model):
     start_date = models.DateTimeField('дата старта', default=timezone.now)
     end_date = models.DateTimeField('дата окончания')
     description = models.TextField('описание')
+    active = models.BooleanField('активный', default=True, db_index=True)
 
     class Meta:
         verbose_name = 'Опрос'
