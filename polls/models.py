@@ -10,7 +10,17 @@ class Poll(models.Model):
 
 
 class Question(models.Model):
-    pass
+    CHOICE = 'CHC'
+    CHOICES = 'CHS'
+    TEXT = 'TXT'
+    QUESTION_TYPE_CHOICES = [
+        (CHOICE, 'Выбрать один вариант'),
+        (CHOICES, 'Выбрать несколько вариантов'),
+        (TEXT, 'Ответ текстом'),
+    ]
+    text = models.TextField('текст вопроса')
+    question_type = models.CharField('тип вопроса', max_length=3,
+                                     choices=QUESTION_TYPE_CHOICES, default=CHOICE)
 
 
 class Choice(models.Model):
