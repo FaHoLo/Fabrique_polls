@@ -1,10 +1,11 @@
+from django.db import transaction
 from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 
 from .models import Poll, Answer
-from .serializers import PollSerializer
+from .serializers import PollSerializer, AnswerSerializer
 
 
 def index(request):
@@ -39,3 +40,24 @@ def get_user_voted_polls(request, user_id):
     serializer = PollSerializer(user_polls, many=True)
     return Response(serializer.data, status=HTTP_200_OK)
 
+
+@transaction.atomic
+@api_view(['POST'])
+def get_user_vote(request):
+    serializer = AnswerSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    try:
+        user_id = request.user.id
+    except KeyError:
+        # TODO set random number to anonim user session
+        user_id = 12432
+
+    answer = Answer.objects.create(
+        user_id=user_id,
+        question=serializer.validated_data['question'],
+        text=serializer.validated_data['text']
+    )
+    answer.choice.set(serializer.validated_data['choice'])
+
+    return Response(AnswerSerializer(answer).data, status=HTTP_201_CREATED)
