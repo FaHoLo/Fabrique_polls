@@ -21,6 +21,8 @@ class Question(models.Model):
     text = models.TextField('текст вопроса')
     question_type = models.CharField('тип вопроса', max_length=3,
                                      choices=QUESTION_TYPE_CHOICES, default=CHOICE)
+    poll = models.ForeignKey(Poll, verbose_name='Опрос',
+                             on_delete=models.CASCADE, related_name='questions')
 
 
 class Choice(models.Model):
