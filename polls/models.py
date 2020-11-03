@@ -58,7 +58,8 @@ class Answer(models.Model):
     user_id = models.IntegerField('id пользователя', validators=[MinValueValidator(1)])
     question = models.ForeignKey(Question, verbose_name='вопрос', on_delete=models.CASCADE,
                                  related_name='answers')
-    choice = models.ManyToManyField(Choice, related_name='answers')
+    choice = models.ManyToManyField(Choice, related_name='answers', blank=True)
+    text = models.TextField('текстовый ответ', blank=True)
 
     class Meta:
         verbose_name = 'Ответ пользователя на вопрос'
