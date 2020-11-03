@@ -42,11 +42,10 @@ def get_user_vote(request):
     serializer = AnswerSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    try:
-        user_id = request.user.id
-    except KeyError:
-        # TODO set random number to anonim user session
-        user_id = 12432
+    user_id = request.user.id
+    if not user_id:
+        # TODO generate random number to anonim user session
+        user_id = 12345
 
     answer = Answer.objects.create(
         user_id=user_id,
