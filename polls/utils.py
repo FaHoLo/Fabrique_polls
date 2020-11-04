@@ -23,10 +23,9 @@ def get_or_set_user_id(function):
             else:
                 cookie_fields = cookie.split('; ')
                 for field in cookie_fields:
-                    if not field.startswith('user_id'):
-                        continue
-                    user_id = field.split('=')[1]
-                    break
+                    if field.startswith('user_id'):
+                        user_id = field.split('=')[1]
+                        break
             kwargs['user_id'] = user_id
 
         response = function(*args, **kwargs)
