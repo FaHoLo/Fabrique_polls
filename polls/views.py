@@ -1,10 +1,17 @@
 from django.db import transaction
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 
 from .models import Poll, Answer
-from .serializers import PollSerializer, AnswerSerializer
+from .serializers import ActivePollSerializer, AnswerSerializer, PollSerializer
+
+
+class PollsViewSet(viewsets.ModelViewSet):
+    queryset = Poll.objects.all()
+    serializer_class = PollSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 @api_view(['GET'])
