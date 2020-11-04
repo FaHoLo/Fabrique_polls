@@ -41,12 +41,11 @@ class AnswerSerializer(ModelSerializer):
 
 
 class QuestionWithUserAnswerSerializer(ModelSerializer):
-    poll = CroppedPollSerializer()
     answers = AnswerSerializer(many=True)
 
     class Meta:
         model = Question
-        fields = ['poll', 'text', 'answers']
+        fields = ['text', 'answers']
 
 
 class VotedPollSerializer(ModelSerializer):
