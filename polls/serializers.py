@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 
 from .models import Poll, Answer, Question, Choice
 
@@ -18,7 +18,12 @@ class QuestionSerializer(ModelSerializer):
 
 
 class PollSerializer(ModelSerializer):
-    questions = QuestionSerializer(many=True)
+    questions = QuestionSerializer(many=True, required=False)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('start_date'):
+            raise ValidationError("start_date is immutable once set.")
+        return super(PollSerializer, self).update(instance, validated_data)
 
     class Meta:
         model = Poll
