@@ -64,6 +64,9 @@ class Answer(models.Model):
     class Meta:
         verbose_name = 'Ответ пользователя на вопрос'
         verbose_name_plural = 'Ответы пользователя на вопрос'
+        unique_together = [
+            ['user_id', 'question'],
+        ]
 
     def __str__(self):
         return f'{self.user_id} {self.question} {self.choice}'
