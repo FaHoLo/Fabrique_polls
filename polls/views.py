@@ -4,8 +4,15 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 
-from .models import Poll, Answer
-from .serializers import ActivePollSerializer, AnswerSerializer, PollSerializer
+from .models import Poll, Answer, Question
+from .serializers import (ActivePollSerializer, AnswerSerializer,
+                          PollSerializer, QuestionSerializer)
+
+
+class QuestionsViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = [permissions.IsAdminUser]
 
 
 class PollsViewSet(viewsets.ModelViewSet):

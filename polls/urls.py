@@ -12,6 +12,7 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register('polls', views.PollsViewSet)
+router.register('questions', views.QuestionsViewSet)
 
 urlpatterns.extend([
     path('', include(router.urls)),
