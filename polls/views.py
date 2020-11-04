@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 
 from .models import Poll, Answer, Question
-from .serializers import (ActivePollSerializer, AnswerSerializer,
-                          PollSerializer, QuestionSerializer)
+from .serializers import (CroppedPollSerializer, AnswerSerializer,
+                          PollSerializer, QuestionSerializer,
+                          VotedPollSerializer)
 
 
 class QuestionsViewSet(viewsets.ModelViewSet):
@@ -24,7 +25,7 @@ class PollsViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def get_active_polls(request):
     polls = Poll.objects.filter(active=True)
-    serializer = ActivePollSerializer(polls, many=True)
+    serializer = CroppedPollSerializer(polls, many=True)
     return Response(serializer.data, status=HTTP_200_OK)
 
 
@@ -34,19 +35,27 @@ def get_user_voted_polls(request, user_id):
     polls = Poll.objects.prefetch_related('questions')
     answers = Answer.objects.filter(user_id=user_id).select_related('question')
 
-    user_questions = set()
+    user_voted_questions = list()
     for answer in answers:
-        user_questions.add(answer.question)
+        user_voted_questions.append(answer.question)
 
-    user_polls = set()
+    user_voted_polls = set()
     for poll in polls:
         poll_questions = poll.questions.all()
         for question in poll_questions:
-            if question in user_questions:
-                user_polls.add(poll)
+            if question in user_voted_questions:
+                user_voted_polls.add(poll)
                 break
 
-    serializer = PollSerializer(user_polls, many=True)
+    # TODO Optimize it, its too complicated
+    for poll in user_voted_polls:
+        for question in poll.questions.all():
+            for answer in answers:
+                if answer.question != question:
+                    continue
+                question.answer = answer
+
+    serializer = VotedPollSerializer(user_voted_polls, many=True)
     return Response(serializer.data, status=HTTP_200_OK)
 
 

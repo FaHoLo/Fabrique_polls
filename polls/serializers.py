@@ -28,7 +28,7 @@ class PollSerializer(ModelSerializer):
         ]
 
 
-class ActivePollSerializer(ModelSerializer):
+class CroppedPollSerializer(ModelSerializer):
     class Meta:
         model = Poll
         fields = ['name', 'description']
@@ -38,3 +38,20 @@ class AnswerSerializer(ModelSerializer):
     class Meta:
         model = Answer
         fields = ['question', 'choice', 'text']
+
+
+class QuestionWithUserAnswerSerializer(ModelSerializer):
+    poll = CroppedPollSerializer()
+    answers = AnswerSerializer(many=True)
+
+    class Meta:
+        model = Question
+        fields = ['poll', 'text', 'answers']
+
+
+class VotedPollSerializer(ModelSerializer):
+    questions = QuestionWithUserAnswerSerializer(many=True)
+
+    class Meta:
+        model = Poll
+        fields = ['name', 'description', 'active', 'questions']
