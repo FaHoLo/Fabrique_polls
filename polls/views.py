@@ -8,6 +8,7 @@ from .models import Poll, Answer, Question
 from .serializers import (CroppedPollSerializer, AnswerSerializer,
                           PollSerializer, QuestionSerializer,
                           VotedPollSerializer)
+from .utils import get_or_set_user_id
 
 
 class QuestionsViewSet(viewsets.ModelViewSet):
@@ -22,13 +23,15 @@ class PollsViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
 
+@get_or_set_user_id
 @api_view(['GET'])
-def get_active_polls(request):
+def get_active_polls(request, user_id):
     polls = Poll.objects.filter(active=True)
     serializer = CroppedPollSerializer(polls, many=True)
     return Response(serializer.data, status=HTTP_200_OK)
 
 
+@get_or_set_user_id
 @api_view(['GET'])
 def get_user_voted_polls(request, user_id):
     # TODO optimize requests to DB
@@ -59,18 +62,14 @@ def get_user_voted_polls(request, user_id):
     return Response(serializer.data, status=HTTP_200_OK)
 
 
+@get_or_set_user_id
 @transaction.atomic
 @api_view(['POST'])
-def get_user_vote(request):
+def get_user_vote(request, user_id):
     serializer = AnswerSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    user_id = request.user.id
-    if not user_id:
-        # TODO generate random number to anonim user session
-        user_id = 12345
-
-    answer = Answer.objects.create(
+    answer, created = Answer.objects.get_or_create(
         user_id=user_id,
         question=serializer.validated_data['question'],
         text=serializer.validated_data['text']
