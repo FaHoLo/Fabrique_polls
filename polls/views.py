@@ -10,7 +10,7 @@ from .serializers import PollSerializer, AnswerSerializer
 @api_view(['GET'])
 def get_active_polls(request):
     polls = Poll.objects.filter(active=True)
-    serializer = PollSerializer(polls, many=True)
+    serializer = ActivePollSerializer(polls, many=True)
     return Response(serializer.data, status=HTTP_200_OK)
 
 
