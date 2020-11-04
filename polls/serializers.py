@@ -10,7 +10,7 @@ class ChoiceSerializer(ModelSerializer):
 
 
 class QuestionSerializer(ModelSerializer):
-    choices = ChoiceSerializer(many=True)
+    choices = ChoiceSerializer(many=True, required=False)
 
     class Meta:
         model = Question
